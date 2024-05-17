@@ -8,18 +8,33 @@
 #' @param max.p The maximum order of the autoregressive part of the ARMA model.
 #' @param max.q The maximum order of the moving average part of the ARMA model.
 #'
-#' @return The expected payoff of the European call option.
+#' @return An estimate of the value of a European call option.
 #'
 #' @examples
 #' \dontrun{
-#' stock_data <- c(100, 102, 105, 107, 110)
-#' future_time <- 5
-#' sell_value <- 115
-#' europeanCallOptionValue(stock_data, future_time, sell_value)
+#' library(forecast)
+#' library(stats)
+#' # Set the model parameters
+#' n <- 1000  # Number of observations
+#' ar_params <- c(0.5, -0.25)  # AR coefficients
+#' ma_params <- c(0.4, 0.3)    # MA coefficients
+#' intercept <- 0.5            # Intercept term for the linear component
+#' # Generate an ARMA(2,2) series
+#' set.seed(1)  # For reproducibility
+#' arma_series <- arima.sim(n = n, model = list(ar = ar_params, ma = ma_params), sd = 1)
+#'
+#' # Add a linear trend
+#' time_index <- 1:n
+#' linear_component <- intercept + 0.05 * time_index  # Linear trend: intercept + slope * time
+#' trended_series <- arma_series + linear_component
+#' europeanCallOptionValue(stock_data = trended_series, future_time = 3, sell_value = 50, max.p = 5, max.q = 5)
 #' }
 #'
+#' @importFrom forecast auto.arima
+#' @importFrom stats coef lm residuals
+#'
 #' @export
-europeanCallOptionValue <- function(stock_data, future_time, sell_value, max.p = 5, max.q = 5) {
+europeanCallOptionValue <- function(stock_data, future_time, sell_value, max.p = 5, max.q = 5, method = 'CSS-ML') {
   # Parameters:
   # stock_data: Numeric vector representing the historical stock prices.
   # future_time: Future time period (in same units as stock_data) for which the put option value is calculated.
@@ -38,6 +53,10 @@ europeanCallOptionValue <- function(stock_data, future_time, sell_value, max.p =
 
   if(!is.numeric(sell_value)) {
     stop("sell_value must be a numeric value.")
+  }
+
+  if (!is.character(method) || !(method %in% c("ML", "CSS-ML", "CSS"))) {
+    stop("method must be one of 'ML', 'CSS-ML', or 'CSS'.")
   }
 
   # Calculate the length of the stock data
@@ -60,7 +79,7 @@ europeanCallOptionValue <- function(stock_data, future_time, sell_value, max.p =
 
   # Calculate expected future stock price
   expected_future_value <- as.numeric(coef(model)[1] + coef(model)[2] * (n + future_time))
-  print(arma_model)
+
   # Calculate the target residual value for the specified sell_value
   residual_target <- sell_value - expected_future_value
 
@@ -72,13 +91,26 @@ europeanCallOptionValue <- function(stock_data, future_time, sell_value, max.p =
   # Estimate the future residual and its conditional expectation
   future_residual <- l_step_prediction$mean[future_time]
   conditional_expectation <- conditional_expectation_normal_negation(future_residual, sigma_future, residual_target)
-  print(sigma_future)
+
   # Probability that the future residual exceeds the target
   probability_exceed <- pnorm(residual_target, mean = future_residual, sd = sigma_future, lower.tail = TRUE)
   # Return the expected payoff of the put option
   if (probability_exceed == 0 || conditional_expectation == Inf) {
-    return(0)
+    option_value = 0
   } else {
-    return((residual_target - conditional_expectation) * probability_exceed)
+    option_value = (residual_target - conditional_expectation) * probability_exceed
   }
+  # Create a list of detailed results
+  listing <- list(
+    option_value = option_value,
+    arma_model = arma_model,
+    expected_future_value = expected_future_value,
+    probability_exceed = probability_exceed,
+    conditional_expectation = conditional_expectation
+  )
+
+  # Return the detailed results
+  return(listing)
 }
+
+

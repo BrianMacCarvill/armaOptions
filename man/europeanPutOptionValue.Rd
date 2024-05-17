@@ -18,7 +18,7 @@ europeanPutOptionValue(stock_data, future_time, sell_value, p = 5, q = 5)
 \item{q}{The maximum order of the moving average part of the ARMA model.}
 }
 \value{
-The expected payoff of the European put option.
+An estimate of the value of a European put option.
 }
 \description{
 This function calculates the value of a European put option based on historical stock prices, a future time period, and a specified strike price.

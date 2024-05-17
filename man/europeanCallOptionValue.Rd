@@ -9,7 +9,8 @@ europeanCallOptionValue(
   future_time,
   sell_value,
   max.p = 5,
-  max.q = 5
+  max.q = 5,
+  method = "CSS-ML"
 )
 }
 \arguments{
@@ -24,17 +25,29 @@ europeanCallOptionValue(
 \item{max.q}{The maximum order of the moving average part of the ARMA model.}
 }
 \value{
-The expected payoff of the European call option.
+An estimate of the value of a European call option.
 }
 \description{
 This function calculates the value of a European call option based on historical stock prices, a future time period, and a specified strike price.
 }
 \examples{
 \dontrun{
-stock_data <- c(100, 102, 105, 107, 110)
-future_time <- 5
-sell_value <- 115
-europeanCallOptionValue(stock_data, future_time, sell_value)
+library(forecast)
+library(stats)
+# Set the model parameters
+n <- 1000  # Number of observations
+ar_params <- c(0.5, -0.25)  # AR coefficients
+ma_params <- c(0.4, 0.3)    # MA coefficients
+intercept <- 0.5            # Intercept term for the linear component
+# Generate an ARMA(2,2) series
+set.seed(1)  # For reproducibility
+arma_series <- arima.sim(n = n, model = list(ar = ar_params, ma = ma_params), sd = 1)
+
+# Add a linear trend
+time_index <- 1:n
+linear_component <- intercept + 0.05 * time_index  # Linear trend: intercept + slope * time
+trended_series <- arma_series + linear_component
+europeanCallOptionValue(stock_data = trended_series, future_time = 3, sell_value = 50, max.p = 5, max.q = 5)
 }
 
 }

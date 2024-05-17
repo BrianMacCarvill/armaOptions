@@ -4,18 +4,18 @@
 \alias{trackPutOptionValueDifferences}
 \title{Track European Put Option Value Differences}
 \usage{
-trackPutOptionValueDifferences(closing_prices, steps, iter, p = 5, q = 5)
+trackPutOptionValueDifferences(stock_data, steps = 1, iter = 10, p = 5, q = 5)
 }
 \arguments{
-\item{closing_prices}{Numeric vector representing the historical closing prices of the stock.}
+\item{stock_data}{Numeric vector representing the historical closing prices of the stock.}
 
-\item{steps}{The number of steps (time periods) to look ahead for the option value calculation.}
+\item{steps}{Integer. The number of steps (time periods) to look ahead for the option value calculation.}
 
-\item{iter}{The total number of iterations to perform.}
+\item{iter}{Integer. The total number of iterations to perform.}
 
-\item{p}{The maximum order of the autoregressive part of the ARMA model (default is 5).}
+\item{p}{Integer. The maximum order of the autoregressive part of the ARMA model (default is 5).}
 
-\item{q}{The maximum order of the moving average part of the ARMA model (default is 5).}
+\item{q}{Integer. The maximum order of the moving average part of the ARMA model (default is 5).}
 }
 \value{
 A list containing:
@@ -30,10 +30,31 @@ This function tracks the differences between the estimated European put option v
 }
 \examples{
 \dontrun{
-closing_prices <- c(100, 102, 105, 107, 110, 108, 105, 103, 101, 99, 98, 97)
-steps <- 2
-iter <- 10
-result <- trackPutOptionValueDifferences(closing_prices, steps, iter)
+# Set the model parameters
+n <- 1000  # Number of observations
+ar_params <- c(0.5, -0.25)  # AR coefficients
+ma_params <- c(0.4, 0.3)    # MA coefficients
+intercept <- 0.5            # Intercept term for the linear component
+
+# Generate an ARMA(2,2) series
+set.seed(1)  # For reproducibility
+arma_series <- arima.sim(n = n, model = list(ar = ar_params, ma = ma_params), sd = 1)
+
+# Add a linear trend
+time_index <- 1:n
+linear_component <- intercept + 0.05 * time_index  # Linear trend: intercept + slope with respect to time
+trended_series <- arma_series + linear_component
+
+# Use the trackPutOptionValueDifferences function with the generated series
+steps <- 3  # Number of steps into the future for option value estimation
+iter <- 50  # Number of iterations to track
+
+# Call the function
+result <- trackPutOptionValueDifferences(trended_series, steps, iter)
+
+# Plot the differences between actual and estimated values
+plot(result$difference, type = "o", col = "blue", main = "Differences between Actual and Estimated Put Option Values",
+     xlab = "Iteration", ylab = "Difference")
 }
 
 }

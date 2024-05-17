@@ -8,7 +8,7 @@
 #' @param p The maximum order of the autoregressive part of the ARMA model.
 #' @param q The maximum order of the moving average part of the ARMA model.
 #'
-#' @return The expected payoff of the European put option.
+#' @return An estimate of the value of a European put option.
 #'
 #' @examples
 #' \dontrun{
@@ -17,6 +17,10 @@
 #' sell_value <- 115
 #' europeanPutOptionValue(stock_data, future_time, sell_value)
 #' }
+#'
+#' @importFrom forecast auto.arima
+#' @importFrom stats coef lm residuals
+#' @importFrom utils head tail
 #'
 #' @export
 europeanPutOptionValue <- function(stock_data, future_time, sell_value, p = 5, q = 5) {
@@ -60,7 +64,6 @@ europeanPutOptionValue <- function(stock_data, future_time, sell_value, p = 5, q
 
   # Calculate expected future stock price
   expected_future_value <- as.numeric(coef(model)[1] + coef(model)[2] * (n + future_time))
-  print(arma_model)
   # Calculate the target residual value for the specified sell_value
   residual_target <- sell_value - expected_future_value
 
@@ -72,16 +75,37 @@ europeanPutOptionValue <- function(stock_data, future_time, sell_value, p = 5, q
   # Estimate the future residual and its conditional expectation
   future_residual <- l_step_prediction$mean[future_time]
   conditional_expectation <- conditional_expectation_normal(future_residual, sigma_future, residual_target)
-  print(sigma_future)
-  print(residual_target)
-  print(future_residual)
+
   # Probability that the future residual exceeds the target
   probability_exceed <- pnorm(residual_target, mean = future_residual, sd = sigma_future, lower.tail = FALSE)
-  print(probability_exceed)
+
+
   # Return the expected payoff of the put option
   if (probability_exceed == 0 || conditional_expectation == Inf) {
-    return(0)
+    option_value = 0
   } else {
-    return((conditional_expectation - residual_target) * probability_exceed)
+    option_value = (conditional_expectation - residual_target) * probability_exceed
   }
+
+  # Create a list of detailed results
+  listing <- list(
+    option_value = option_value,
+    arma_model = arma_model,
+    expected_future_value = expected_future_value,
+    sigma_future = sigma_future,
+    probability_exceed = probability_exceed,
+    conditional_expectation = conditional_expectation
+  )
+
+  # Return the detailed results
+  return(listing)
 }
+
+
+
+
+
+
+
+
+
