@@ -12,18 +12,29 @@
 #'
 #' @examples
 #' \dontrun{
-#' stock_data <- c(100, 102, 105, 107, 110)
-#' future_time <- 5
-#' sell_value <- 115
-#' europeanPutOptionValue(stock_data, future_time, sell_value)
+#' library(stats)
+#' library(forecast)
+#' # Set the model parameters
+#' n <- 1000  # Number of observations
+#' ar_params <- c(0.5, -0.25)  # AR coefficients
+#' ma_params <- c(0.4, 0.3)    # MA coefficients
+#' intercept <- 0.5            # Intercept term for the linear component
+#' # Generate an ARMA(2,2) series
+#' set.seed(1)  # For reproducibility
+#' arma_series <- arima.sim(n = n, model = list(ar = ar_params, ma = ma_params), sd = 1)
+#'
+#' # Add a linear trend
+#' time_index <- 1:n
+#' linear_component <- intercept + 0.05 * time_index  # Linear trend: intercept + slope * time
+#' trended_series <- arma_series + linear_component
+#' europeanCallOptionValue(stock_data = trended_series, future_time = 3, sell_value = 50, max.p = 5, max.q = 5)
 #' }
 #'
 #' @importFrom forecast auto.arima
-#' @importFrom stats coef lm residuals
-#' @importFrom utils head tail
+#' @importFrom function stats coef lm residuals auto.arima
 #'
 #' @export
-europeanPutOptionValue <- function(stock_data, future_time, sell_value, p = 5, q = 5) {
+europeanPutOptionValue <- function(stock_data, future_time, sell_value, max.p = 5, max.q = 5) {
   # Parameters:
   # stock_data: Numeric vector representing the historical stock prices.
   # future_time: Future time period (in same units as stock_data) for which the put option value is calculated.
@@ -55,12 +66,12 @@ europeanPutOptionValue <- function(stock_data, future_time, sell_value, p = 5, q
   residuals <- residuals(model)
 
   # Fit ARMA model to the residuals
-  arma_model <- auto.arima(residuals, max.p = p, max.q = q, stationary = TRUE, allowmean = FALSE, ic = "aic", method = "ML")
+  arma_model <- auto.arima(residuals, max.p = max.p, max.q = max.p, stationary = TRUE, allowmean = FALSE, ic = "aic", method = "ML")
   l_step_prediction = forecast(arma_model, h = future_time)
   # Extract AR and MA coefficients
   coefficients <- coef(arma_model)
-  ar_coefficients <- coefficients[grep("^ar", names(coefficients))]
-  ma_coefficients <- coefficients[grep("^ma", names(coefficients))]
+  ar_consonants <- coefficients[grep("^ar", names(coefficients))]
+  ma_consonants <- coefficients[grep("^ma", names(coefficients))]
 
   # Calculate expected future stock price
   expected_future_value <- as.numeric(coef(model)[1] + coef(model)[2] * (n + future_time))
@@ -68,44 +79,32 @@ europeanPutOptionValue <- function(stock_data, future_time, sell_value, p = 5, q
   residual_target <- sell_value - expected_future_value
 
   # Determine the variance of future residuals
-  max_lag <- 1000  # Assuming convergence
-  acf_values <- ARMAtoMA(ar = ar_coefficients, ma = ma_coefficients, lag.max = max_lag)
   sigma_future <- sqrt((l_step_prediction$upper[future_time] - l_step_prediction$lower[future_time]) / (2 * 1.96))
 
   # Estimate the future residual and its conditional expectation
   future_residual <- l_step_prediction$mean[future_time]
+
   conditional_expectation <- conditional_expectation_normal(future_residual, sigma_future, residual_target)
 
   # Probability that the future residual exceeds the target
-  probability_exceed <- pnorm(residual_target, mean = future_residual, sd = sigma_future, lower.tail = FALSE)
+  probability_to_exceed <- pnorm(residual_target, mean = future_residual, sd = sigma_future, lower.tail = FALSE)
 
 
   # Return the expected payoff of the put option
-  if (probability_exceed == 0 || conditional_expectation == Inf) {
-    option_value = 0
+  if (probability_to_exceed == 0 || conditional_expectation == Inf) {
+    stock_option_value = 0
   } else {
-    option_value = (conditional_expectation - residual_target) * probability_exceed
+    stock_option_value = (conditional_expectation - residual_target) * probability_to_exceed
   }
-
-  # Create a list of detailed results
-  listing <- list(
-    option_value = option_value,
-    arma_model = arma_model,
-    expected_future_value = expected_future_value,
-    sigma_future = sigma_future,
-    probability_exceed = probability_exceed,
-    conditional_expectation = conditional_expectation
-  )
-
   # Return the detailed results
-  return(listing)
+  return(list(
+    stock_option_value = stock_option_value,
+    probability_of_profit = probability_to_exceed,
+    ar_consonants = ar_consonants,
+    ma_consonants = ma_consonants,
+    Regression_model_coefficients = model$coefficients
+  ))
 }
-
-
-
-
-
-
 
 
 

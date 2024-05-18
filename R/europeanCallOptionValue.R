@@ -12,8 +12,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' library(forecast)
 #' library(stats)
+#' library(forecast)
 #' # Set the model parameters
 #' n <- 1000  # Number of observations
 #' ar_params <- c(0.5, -0.25)  # AR coefficients
@@ -31,7 +31,7 @@
 #' }
 #'
 #' @importFrom forecast auto.arima
-#' @importFrom stats coef lm residuals
+#' @importFrom stats coef lm residuals auto.arima
 #'
 #' @export
 europeanCallOptionValue <- function(stock_data, future_time, sell_value, max.p = 5, max.q = 5, method = 'CSS-ML') {
@@ -70,7 +70,7 @@ europeanCallOptionValue <- function(stock_data, future_time, sell_value, max.p =
   residuals <- residuals(model)
 
   # Fit ARMA model to the residuals
-  arma_model <- auto.arima(residuals, max.p = max.p, max.q = max.q, stationary = TRUE, allowmean = FALSE, ic = "aic", method = "ML")
+  arma_model <- auto.arima(residuals, max.p = max.p, max.q = max.q, stationary = TRUE, allowmean = FALSE, ic = "aic", method = method)
   l_step_prediction = forecast(arma_model, h = future_time)
   # Extract AR and MA coefficients
   coefficients <- coef(arma_model)
@@ -84,33 +84,28 @@ europeanCallOptionValue <- function(stock_data, future_time, sell_value, max.p =
   residual_target <- sell_value - expected_future_value
 
   # Determine the variance of future residuals
-  max_lag <- 1000  # Assuming convergence
-  acf_values <- ARMAtoMA(ar = ar_coefficients, ma = ma_coefficients, lag.max = max_lag)
   sigma_future <- sqrt((l_step_prediction$upper[future_time] - l_step_prediction$lower[future_time]) / (2 * 1.96))
 
   # Estimate the future residual and its conditional expectation
-  future_residual <- l_step_prediction$mean[future_time]
-  conditional_expectation <- conditional_expectation_normal_negation(future_residual, sigma_future, residual_target)
+  future_expected_residual <- l_step_prediction$mean[future_time]
+  conditional_expectation <- conditional_expectation_normal_negation(future_expected_residual, sigma_future, residual_target)
 
   # Probability that the future residual exceeds the target
-  probability_exceed <- pnorm(residual_target, mean = future_residual, sd = sigma_future, lower.tail = TRUE)
+  probability_not_exceed <- pnorm(residual_target, mean = future_expected_residual, sd = sigma_future, lower.tail = TRUE)
   # Return the expected payoff of the put option
-  if (probability_exceed == 0 || conditional_expectation == Inf) {
+  if (probability_not_exceed == 0 || conditional_expectation == Inf) {
     option_value = 0
   } else {
-    option_value = (residual_target - conditional_expectation) * probability_exceed
+    option_value = (residual_target - conditional_expectation) * probability_not_exceed
   }
   # Create a list of detailed results
-  listing <- list(
-    option_value = option_value,
-    arma_model = arma_model,
-    expected_future_value = expected_future_value,
-    probability_exceed = probability_exceed,
-    conditional_expectation = conditional_expectation
-  )
 
   # Return the detailed results
-  return(listing)
+  return(list(
+    stock_option_value = option_value,
+    probability_exceed = probability_not_exceed,
+    ar_coefficients = ar_coefficients,
+    ma_coefficients = ma_coefficients,
+    Regression_model_coefficients = model$coefficients
+  ))
 }
-
-

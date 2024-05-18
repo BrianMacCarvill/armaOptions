@@ -32,8 +32,8 @@ This function calculates the value of a European call option based on historical
 }
 \examples{
 \dontrun{
-library(forecast)
 library(stats)
+library(forecast)
 # Set the model parameters
 n <- 1000  # Number of observations
 ar_params <- c(0.5, -0.25)  # AR coefficients

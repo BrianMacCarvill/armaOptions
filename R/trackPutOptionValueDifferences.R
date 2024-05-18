@@ -17,6 +17,8 @@
 #'
 #' @examples
 #' \dontrun{
+#'
+#' library(stats)
 #' # Set the model parameters
 #' n <- 1000  # Number of observations
 #' ar_params <- c(0.5, -0.25)  # AR coefficients
