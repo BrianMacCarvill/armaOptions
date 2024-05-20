@@ -2,33 +2,48 @@
 % Please edit documentation in R/europeanPutOptionValue.R
 \name{europeanPutOptionValue}
 \alias{europeanPutOptionValue}
-\title{Calculate European Put Option Value}
+\title{Estimate European Put Option Value}
 \usage{
-europeanPutOptionValue(stock_data, future_time, sell_value, p = 5, q = 5)
+europeanPutOptionValue(
+  stock_data,
+  future_time,
+  sell_value,
+  max.p = 5,
+  max.q = 5,
+  method = "CSS-ML"
+)
 }
 \arguments{
-\item{stock_data}{Numeric vector representing the historical stock prices.}
+\item{stock_data}{Numeric vector of stock prices data}
 
-\item{future_time}{Future time period (in same units as stock_data) for which the put option value is calculated.}
+\item{future_time}{Numeric constant of the future time}
 
-\item{sell_value}{The strike price of the European put option.}
+\item{sell_value}{The numeric sell value of the European put option.}
 
-\item{p}{The maximum order of the autoregressive part of the ARMA model.}
+\item{max.p}{The maximum order of the autoregressive part of the ARMA model}
 
-\item{q}{The maximum order of the moving average part of the ARMA model.}
+\item{max.q}{The maximum order of the moving average part of the ARMA model}
+
+\item{method}{The way that the ARMA model is calculated}
 }
 \value{
-An estimate of the value of a European put option.
+An estimated value of a European put option.
 }
 \description{
-This function calculates the value of a European put option based on historical stock prices, a future time period, and a specified strike price.
+This function calculates the value of a European put option based on stock data, a future time value, and a sell value
 }
 \examples{
 \dontrun{
-stock_data <- c(100, 102, 105, 107, 110)
-future_time <- 5
-sell_value <- 115
-europeanPutOptionValue(stock_data, future_time, sell_value)
+# Import Packages
+library(stats)
+library(forecast)
+# Create simulated data
+n = 100
+set.seed(42)
+arma_values = arima.sim(n = n, model = list(ar = c(0.6), ma = c(0.5, -0.5)))
+linear_model = 5 + 1:n
+stock_data = arma_values + linear_model
+europeanPutOptionValue(stock_data = stock_data, future_time = 5, sell_value = 110, max.p = 5, max.q = 5)
 }
 
 }

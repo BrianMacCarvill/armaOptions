@@ -1,18 +1,16 @@
 Package: CW2
 Type: Package
-Title: What the Package Does (Title Case)
+Title: ARMA Models to Value Stock Options 
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: This package provides comprehensive tools for valuing European call and put options 
-    using historical stock price data. It includes functions for calculating option values 
-    based on autoregressive (AR) models, tracking differences between estimated and actual 
-    option values, and generating detailed statistical analyses. The package is designed 
-    to be user-friendly and integrate seamlessly with the 'forecast', 'stats', and 'TSA' 
-    packages to provide robust financial analysis capabilities.
+Author: Brian MacCarvill
+Maintainer: Brian MacCarvill <brian.mac-carvill23@imperial.ac.uk>
+Description: This package provides ways to estimate the value of European stock options 
+    using stock price data. It includes functions for calculating option values 
+    based on autoregressive–moving-average (ARMA) models and generating detailed statistical analyses. 
+    The package is designed to be easy to use and dependent on the 'forecast', 'stats', and 'TSA' 
+    packages to provided for financial analysis capabilities.
 License: GPL-3
 Encoding: UTF-8
-LazyData: true
 Imports: 
     forecast,
     stats,

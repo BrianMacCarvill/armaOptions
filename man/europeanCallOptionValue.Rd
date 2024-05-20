@@ -2,52 +2,48 @@
 % Please edit documentation in R/europeanCallOptionValue.R
 \name{europeanCallOptionValue}
 \alias{europeanCallOptionValue}
-\title{Calculate European Call Option Value}
+\title{Estimate European Call Option Value}
 \usage{
 europeanCallOptionValue(
   stock_data,
   future_time,
-  sell_value,
+  buy_value,
   max.p = 5,
   max.q = 5,
   method = "CSS-ML"
 )
 }
 \arguments{
-\item{stock_data}{Numeric vector representing the historical stock prices.}
+\item{stock_data}{Numeric vector of stock prices data.}
 
-\item{future_time}{Future time period (in same units as stock_data) for which the put option value is calculated.}
+\item{future_time}{Numeric constant of the future time}
 
-\item{sell_value}{The strike price of the European call option.}
+\item{buy_value}{The buy value of the European call option.}
 
 \item{max.p}{The maximum order of the autoregressive part of the ARMA model.}
 
 \item{max.q}{The maximum order of the moving average part of the ARMA model.}
+
+\item{method}{The way that the ARMA model is calculated}
 }
 \value{
-An estimate of the value of a European call option.
+An estimated value of a European call option.
 }
 \description{
-This function calculates the value of a European call option based on historical stock prices, a future time period, and a specified strike price.
+This function calculates the value of a European call option based on stock data, a future time value, and a sell value
 }
 \examples{
 \dontrun{
-library(forecast)
+# Import Packages
 library(stats)
-# Set the model parameters
-n <- 1000  # Number of observations
-ar_params <- c(0.5, -0.25)  # AR coefficients
-ma_params <- c(0.4, 0.3)    # MA coefficients
-intercept <- 0.5            # Intercept term for the linear component
-# Generate an ARMA(2,2) series
-set.seed(1)  # For reproducibility
-arma_series <- arima.sim(n = n, model = list(ar = ar_params, ma = ma_params), sd = 1)
-
-# Add a linear trend
-time_index <- 1:n
-linear_component <- intercept + 0.05 * time_index  # Linear trend: intercept + slope * time
-trended_series <- arma_series + linear_component
-europeanCallOptionValue(stock_data = trended_series, future_time = 3, sell_value = 50, max.p = 5, max.q = 5)
+library(forecast)
+# Create simulated data
+n = 100
+set.seed(42)
+arma_values = arima.sim(n = n, model = list(ar = c(0.5), ma = c(0.5, -0.5)))
+linear_model = 5 +  1:n
+stock_data = arma_values + linear_model
+europeanCallOptionValue(stock_data = stock_data, future_time = 5, buy_value = 110, max.p = 5, max.q = 5)
 }
 
 }

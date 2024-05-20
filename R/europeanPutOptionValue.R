@@ -1,111 +1,119 @@
-#' Calculate European Put Option Value
+#' Estimate European Put Option Value
 #'
-#' This function calculates the value of a European put option based on historical stock prices, a future time period, and a specified strike price.
+#' This function calculates the value of a European put option based on stock data, a future time value, and a sell value
 #'
-#' @param stock_data Numeric vector representing the historical stock prices.
-#' @param future_time Future time period (in same units as stock_data) for which the put option value is calculated.
-#' @param sell_value The strike price of the European put option.
-#' @param p The maximum order of the autoregressive part of the ARMA model.
-#' @param q The maximum order of the moving average part of the ARMA model.
-#'
-#' @return An estimate of the value of a European put option.
+#' @param stock_data Numeric vector of stock prices data
+#' @param future_time Numeric constant of the future time
+#' @param sell_value The numeric sell value of the European put option.
+#' @param max.p The maximum order of the autoregressive part of the ARMA model
+#' @param max.q The maximum order of the moving average part of the ARMA model
+#' @param method The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"
+#' @return An estimated value of a European put option.
 #'
 #' @examples
 #' \dontrun{
-#' stock_data <- c(100, 102, 105, 107, 110)
-#' future_time <- 5
-#' sell_value <- 115
-#' europeanPutOptionValue(stock_data, future_time, sell_value)
+#' # Import Packages
+#' library(stats)
+#' library(forecast)
+#' # Create simulated data
+#' n = 100
+#' set.seed(42)
+#' arma_values = arima.sim(n = n, model = list(ar = c(0.6), ma = c(0.5, -0.5)))
+#' linear_model = 5 + 1:n
+#' stock_data = arma_values + linear_model
+#' europeanPutOptionValue(stock_data = stock_data, future_time = 5, sell_value = 110, max.p = 5, max.q = 5)
 #' }
 #'
-#' @importFrom forecast auto.arima
-#' @importFrom stats coef lm residuals
-#' @importFrom utils head tail
+#' @importFrom forecast auto.arima forecast
+#' @importFrom function stats coef lm residuals
 #'
 #' @export
-europeanPutOptionValue <- function(stock_data, future_time, sell_value, p = 5, q = 5) {
+europeanPutOptionValue = function(stock_data, future_time, sell_value, max.p = 5, max.q = 5, method = 'CSS-ML') {
   # Parameters:
-  # stock_data: Numeric vector representing the historical stock prices.
-  # future_time: Future time period (in same units as stock_data) for which the put option value is calculated.
-  # sell_value: The strike price of the European put option.
-  # p: The maximum order of the autoregressive part of the ARMA model.
-  # q: The maximum order of the moving average part of the ARMA model.
+  # stock_data Numeric vector of stock prices data
+  # future_time Numeric constant of the future time
+  # sell_value The numeric sell value of the European put option
+  # max.p The maximum order of the autoregressive part of the ARMA model
+  # max.q The maximum order of the moving average part of the ARMA model
+  # method The way that the ARMA model is calculated
 
-  # Validate inputs
-  if(!is.numeric(stock_data) || length(stock_data) < 2) {
-    stop("stock_data must be a numeric vector with at least two elements.")
+  # Check input
+  if (!is.numeric(stock_data)) {
+    stop("stock_data needs to be numeric")
   }
 
-  if(!is.numeric(future_time) || future_time <= 0) {
-    stop("future_time must be a positive numeric value.")
+  if (!is.numeric(future_time)) {
+    stop("future_time needs to be numeric")
   }
 
-  if(!is.numeric(sell_value)) {
-    stop("sell_value must be a numeric value.")
+  if (!is.numeric(sell_value)) {
+    stop("sell_value needs to be numeric")
   }
 
-  # Calculate the length of the stock data
-  n <- length(stock_data)
-  time_index <- 1:n
+  if (!(method %in% c("ML", "CSS-ML", "CSS"))) {
+    stop("method must be one of 'ML', 'CSS-ML', or 'CSS'.")
+  }
 
-  # Linear regression to find trends in stock data
-  model <- lm(stock_data ~ time_index)
+  # Define negative_conditional_expectation function
+  negative_conditional_expectation <- function(mu, sigma, S) {
 
-  # Extract residuals for ARMA modeling
-  residuals <- residuals(model)
+    z <- (S - mu) / sigma
+
+    cdf <- pnorm(z)
+    pdf <- dnorm(z)
+
+    # Calculate E[X|X<S]
+    E_X <- mu - sigma * (pdf / cdf)
+
+    return(E_X)
+  }
+
+
+  # Get linear model
+  n = length(stock_data)
+  time_index = 1:n
+
+  # Fit Linear regression
+  lm_model = lm(stock_data ~ time_index)
+
+  # Get residuals for ARMA modeling
+  residuals = residuals(lm_model)
 
   # Fit ARMA model to the residuals
-  arma_model <- auto.arima(residuals, max.p = p, max.q = q, stationary = TRUE, allowmean = FALSE, ic = "aic", method = "ML")
-  l_step_prediction = forecast(arma_model, h = future_time)
-  # Extract AR and MA coefficients
-  coefficients <- coef(arma_model)
-  ar_coefficients <- coefficients[grep("^ar", names(coefficients))]
-  ma_coefficients <- coefficients[grep("^ma", names(coefficients))]
+  arma_model = auto.arima(residuals, max.p = max.p, max.q = max.q, stationary = TRUE, allowmean = FALSE, ic = "aic", method = method)
+  # forecast future ARMA predictions
+  future_prediction = forecast(arma_model, h = future_time)
 
   # Calculate expected future stock price
-  expected_future_value <- as.numeric(coef(model)[1] + coef(model)[2] * (n + future_time))
+  expected_future_value = as.numeric(coef(lm_model)[1] + coef(lm_model)[2] * (n + future_time))
+
   # Calculate the target residual value for the specified sell_value
-  residual_target <- sell_value - expected_future_value
+  profit_threshold = expected_future_value - sell_value
 
-  # Determine the variance of future residuals
-  max_lag <- 1000  # Assuming convergence
-  acf_values <- ARMAtoMA(ar = ar_coefficients, ma = ma_coefficients, lag.max = max_lag)
-  sigma_future <- sqrt((l_step_prediction$upper[future_time] - l_step_prediction$lower[future_time]) / (2 * 1.96))
+  # Determine the standard deviation of the future residual at future_time
+  forecast_sd = sqrt((future_prediction$upper[future_time] - future_prediction$lower[future_time]) / (2 * 1.96))
 
-  # Estimate the future residual and its conditional expectation
-  future_residual <- l_step_prediction$mean[future_time]
-  conditional_expectation <- conditional_expectation_normal(future_residual, sigma_future, residual_target)
+  # Estimate the future residual
+  future_expected_residual = future_prediction$mean[future_time]
 
+
+  # Calculate the expected value give the option is profitable
+  conditional_value = negative_conditional_expectation(future_expected_residual, forecast_sd, profit_threshold)
+  if (is.na(conditional_value) || conditional_value == Inf) {
+    conditional_value = profit_threshold
+  }
   # Probability that the future residual exceeds the target
-  probability_exceed <- pnorm(residual_target, mean = future_residual, sd = sigma_future, lower.tail = FALSE)
-
+  probability_to_exceed = pnorm(profit_threshold, mean = future_expected_residual, sd = forecast_sd, lower.tail = FALSE)
 
   # Return the expected payoff of the put option
-  if (probability_exceed == 0 || conditional_expectation == Inf) {
-    option_value = 0
-  } else {
-    option_value = (conditional_expectation - residual_target) * probability_exceed
-  }
+  stock_option_value = (-conditional_value) * probability_to_exceed
 
-  # Create a list of detailed results
-  listing <- list(
-    option_value = option_value,
-    arma_model = arma_model,
-    expected_future_value = expected_future_value,
-    sigma_future = sigma_future,
-    probability_exceed = probability_exceed,
-    conditional_expectation = conditional_expectation
-  )
-
-  # Return the detailed results
-  return(listing)
+  # Return the results
+  return(list(
+    stock_option_value = stock_option_value,
+    probability_of_profit = probability_to_exceed,
+    expected_profit_when_profitable = -conditional_value,
+    arma_coefficients = coef(arma_model),
+    Regression_model_coefficients = lm_model$coefficients
+  ))
 }
-
-
-
-
-
-
-
-
-
