@@ -33,7 +33,7 @@ stock_data = arma_values + linear_model
 sell_value = 110
 future_times = c(1, 3, 5)
 
-# Calculate put option values over a list of sell values
+# Calculate put option values over a list of future times
 results = PutOptionsOverTime(stock_data = stock_data, future_times = future_times, sell_value = sell_value)
 
 # Print results
