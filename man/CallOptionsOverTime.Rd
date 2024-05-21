@@ -4,7 +4,14 @@
 \alias{CallOptionsOverTime}
 \title{Time Sensitivity Analysis for European Call Option}
 \usage{
-CallOptionsOverTime(stock_data, future_times, buy_value, max.p = 5, max.q = 5)
+CallOptionsOverTime(
+  stock_data,
+  future_times,
+  buy_value,
+  max.p = 5,
+  max.q = 5,
+  method = "CSS-ML"
+)
 }
 \arguments{
 \item{stock_data}{Numeric vector of stock prices data.}
@@ -14,6 +21,8 @@ CallOptionsOverTime(stock_data, future_times, buy_value, max.p = 5, max.q = 5)
 \item{max.p}{The maximum order of the autoregressive part of the ARMA model (default is 5).}
 
 \item{max.q}{The maximum order of the moving average part of the ARMA model (default is 5).}
+
+\item{method}{The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"}
 
 \item{strike_price}{Numeric value representing the fixed strike price to analyze.}
 }
@@ -30,16 +39,16 @@ library(stats)
 library(forecast)
 
 # Create simulated data
-n <- 100
+n = 100
 set.seed(42)
-arma_values <- arima.sim(n = n, model = list(ar = c(0.6), ma = c(0.5, -0.5)))
-linear_model <- 5 + 1:n
-stock_data <- arma_values + linear_model
+arma_values = arima.sim(n = n, model = list(ar = c(0.6), ma = c(0.5, -0.5)))
+linear_model = 5 + 1:n
+stock_data = arma_values + linear_model
 
-future_times <- seq(1, 10, length.out = 10)
-buy_value <- 100
+future_times = c(1,3,5)
+buy_value = 105
 
-# Run the function
+
 CallOptionsOverTime(stock_data, future_times, buy_value)
 }
 

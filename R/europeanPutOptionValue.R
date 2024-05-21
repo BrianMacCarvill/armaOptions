@@ -8,7 +8,7 @@
 #' @param max.p The maximum order of the autoregressive part of the ARMA model
 #' @param max.q The maximum order of the moving average part of the ARMA model
 #' @param method The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"
-#' @return An estimated value of a European put option.
+#' @return Estimate the value of a European put option, determine the probability of making profits, and model a appropriate ARMA model for the given stock data.
 #'
 #' @examples
 #' \dontrun{
@@ -25,7 +25,7 @@
 #' }
 #'
 #' @importFrom forecast auto.arima forecast
-#' @importFrom function stats coef lm residuals
+#' @importFrom stats coef lm residuals
 #'
 #' @export
 europeanPutOptionValue = function(stock_data, future_time, sell_value, max.p = 5, max.q = 5, method = 'CSS-ML') {
@@ -39,7 +39,11 @@ europeanPutOptionValue = function(stock_data, future_time, sell_value, max.p = 5
 
   # Check input
   if (!is.numeric(stock_data)) {
-    stop("stock_data needs to be numeric")
+    stop("stock_data needs to be numeric vector")
+  }
+
+  if (length(stock_data) < 2) {
+    stop("stock_data needs to have at least 2 values")
   }
 
   if (!is.numeric(future_time)) {
@@ -88,7 +92,7 @@ europeanPutOptionValue = function(stock_data, future_time, sell_value, max.p = 5
   expected_future_value = as.numeric(coef(lm_model)[1] + coef(lm_model)[2] * (n + future_time))
 
   # Calculate the target residual value for the specified sell_value
-  profit_threshold = expected_future_value - sell_value
+  profit_threshold = sell_value - expected_future_value
 
   # Determine the standard deviation of the future residual at future_time
   forecast_sd = sqrt((future_prediction$upper[future_time] - future_prediction$lower[future_time]) / (2 * 1.96))
@@ -96,23 +100,23 @@ europeanPutOptionValue = function(stock_data, future_time, sell_value, max.p = 5
   # Estimate the future residual
   future_expected_residual = future_prediction$mean[future_time]
 
-
   # Calculate the expected value give the option is profitable
   conditional_value = negative_conditional_expectation(future_expected_residual, forecast_sd, profit_threshold)
   if (is.na(conditional_value) || conditional_value == Inf) {
     conditional_value = profit_threshold
   }
   # Probability that the future residual exceeds the target
-  probability_to_exceed = pnorm(profit_threshold, mean = future_expected_residual, sd = forecast_sd, lower.tail = FALSE)
+  probability_to_exceed = pnorm(profit_threshold, mean = future_expected_residual, sd = forecast_sd, lower.tail = TRUE)
 
   # Return the expected payoff of the put option
-  stock_option_value = (-conditional_value) * probability_to_exceed
+  expected_profit_when_profitable = profit_threshold-conditional_value
+  stock_option_value = expected_profit_when_profitable * probability_to_exceed
 
   # Return the results
   return(list(
     stock_option_value = stock_option_value,
     probability_of_profit = probability_to_exceed,
-    expected_profit_when_profitable = -conditional_value,
+    expected_profit_when_profitable = expected_profit_when_profitable,
     arma_coefficients = coef(arma_model),
     Regression_model_coefficients = lm_model$coefficients
   ))

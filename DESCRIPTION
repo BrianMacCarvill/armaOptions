@@ -1,4 +1,4 @@
-Package: CW2
+Package: armaOptions
 Type: Package
 Title: ARMA Models to Value Stock Options 
 Version: 0.1.0

@@ -23,7 +23,8 @@
 #' stock_data = arma_values + linear_model
 #'
 #' future_time = 3
-#' buy_values = seq(90, 110, length.out = 10)
+#' buy_values = seq(90, 110, length.out = 5)
+#'
 #' CallOptionsOverStrikePrices(stock_data, future_time, buy_values)
 #' }
 #'
@@ -37,12 +38,20 @@ CallOptionsOverStrikePrices = function(stock_data, future_time, buy_values, max.
     stop("stock_data needs to be numeric")
   }
 
+  if (length(stock_data) < 2) {
+    stop("stock_data needs to have at least 2 values")
+  }
+
   if (!is.numeric(future_time)) {
     stop("future_time needs to be numeric")
   }
 
   if (!is.numeric(buy_values)) {
     stop("buy_values needs to be numeric")
+  }
+
+  if (!(method %in% c("ML", "CSS-ML", "CSS"))) {
+    stop("method must be one of 'ML', 'CSS-ML', or 'CSS'.")
   }
 
   n = length(buy_values)
@@ -57,7 +66,5 @@ CallOptionsOverStrikePrices = function(stock_data, future_time, buy_values, max.
 
   return(results)
 }
-
-
 
 

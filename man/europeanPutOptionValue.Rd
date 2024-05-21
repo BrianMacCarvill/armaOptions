@@ -24,10 +24,10 @@ europeanPutOptionValue(
 
 \item{max.q}{The maximum order of the moving average part of the ARMA model}
 
-\item{method}{The way that the ARMA model is calculated}
+\item{method}{The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"}
 }
 \value{
-An estimated value of a European put option.
+Estimate the value of a European put option, determine the probability of making profits, and model a appropriate ARMA model for the given stock data.
 }
 \description{
 This function calculates the value of a European put option based on stock data, a future time value, and a sell value

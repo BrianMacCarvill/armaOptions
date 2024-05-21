@@ -18,19 +18,19 @@ europeanCallOptionValue(
 
 \item{future_time}{Numeric constant of the future time}
 
-\item{buy_value}{The buy value of the European call option.}
+\item{buy_value}{The numeric buy value of the European call option.}
 
 \item{max.p}{The maximum order of the autoregressive part of the ARMA model.}
 
 \item{max.q}{The maximum order of the moving average part of the ARMA model.}
 
-\item{method}{The way that the ARMA model is calculated}
+\item{method}{The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"}
 }
 \value{
-An estimated value of a European call option.
+Estimate the value of a European call option, determine the probability of making profits, and model a appropriate ARMA model for the given stock data.
 }
 \description{
-This function calculates the value of a European call option based on stock data, a future time value, and a sell value
+This function calculates the value of a European call option based on stock data, a future time value, and a buy value
 }
 \examples{
 \dontrun{
@@ -43,7 +43,11 @@ set.seed(42)
 arma_values = arima.sim(n = n, model = list(ar = c(0.5), ma = c(0.5, -0.5)))
 linear_model = 5 +  1:n
 stock_data = arma_values + linear_model
-europeanCallOptionValue(stock_data = stock_data, future_time = 5, buy_value = 110, max.p = 5, max.q = 5)
+
+buy_value = 105
+future_time = 1
+
+europeanCallOptionValue(stock_data = stock_data, future_time, buy_value, max.p = 5, max.q = 5)
 }
 
 }

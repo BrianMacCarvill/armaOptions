@@ -4,7 +4,14 @@
 \alias{PutOptionsOverTime}
 \title{Time Sensitivity Analysis for European Call Option}
 \usage{
-PutOptionsOverTime(stock_data, future_times, sell_value, max.p = 5, max.q = 5)
+PutOptionsOverTime(
+  stock_data,
+  future_times,
+  sell_value,
+  max.p = 5,
+  max.q = 5,
+  method = "CSS-ML"
+)
 }
 \arguments{
 \item{stock_data}{Numeric vector of stock prices data.}
@@ -14,6 +21,8 @@ PutOptionsOverTime(stock_data, future_times, sell_value, max.p = 5, max.q = 5)
 \item{max.p}{The maximum order of the autoregressive part of the ARMA model (default is 5).}
 
 \item{max.q}{The maximum order of the moving average part of the ARMA model (default is 5).}
+
+\item{method}{The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"}
 
 \item{strike_price}{Numeric value representing the fixed strike price to analyze.}
 }
@@ -27,15 +36,16 @@ It calculates the option value for a fixed strike price over a range of future t
 \examples{
 \dontrun{
 library(stats)
+library(forecast)
 
 # Create simulated data
-n <- 100
+n = 100
 set.seed(42)
-arma_values <- arima.sim(n = n, model = list(ar = c(0.6), ma = c(0.5, -0.5)))
-linear_model <- 5 + 1:n
-stock_data <- arma_values + linear_model
+arma_values = arima.sim(n = n, model = list(ar = c(0.6), ma = c(0.5, -0.5)))
+linear_model = 5 + 1:n
+stock_data = arma_values + linear_model
 
-sell_value <- 110
+sell_value = 110
 future_times = c(1, 3, 5)
 
 PutOptionsOverTime(stock_data = stock_data, future_times = future_times, sell_value = sell_value)
