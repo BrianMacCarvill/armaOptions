@@ -4,7 +4,7 @@
 
 ## Overview
 
-This package provides ways to estimate the value of European stock options given stock price data. It includes functions for calculating option values based on autoregressive–moving-average (ARMA) models and also returns information about these models. This package is make to be easy to understand and dependent on the 'forecast' and 'stats' packages to provided for financial analysis capabilities.
+This package provides ways to estimate the value of European stock options given stock price data. It includes functions for calculating option values based on Auto-Regressive–Moving-Average (ARMA) models and also returns information about these models. This package is make to be easy to understand and for financial analysis capabilities. This package is dependent on the 'forecast' and 'stats' packages.
 
 ## Installation
 
