@@ -4,7 +4,7 @@
 #'
 #' @param stock_data Numeric vector of stock prices data.
 #' @param future_times Numeric vector of the future times
-#' @param strike_price Numeric value representing the fixed strike price to analyze.
+#' @param sell_value Numeric value representing the sell value
 #' @param max.p The maximum order of the autoregressive part of the ARMA model (default is 5).
 #' @param max.q The maximum order of the moving average part of the ARMA model (default is 5).
 #' @param method The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"

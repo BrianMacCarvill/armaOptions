@@ -18,13 +18,13 @@ PutOptionsOverTime(
 
 \item{future_times}{Numeric vector of the future times}
 
+\item{sell_value}{Numeric value representing the sell value}
+
 \item{max.p}{The maximum order of the autoregressive part of the ARMA model (default is 5).}
 
 \item{max.q}{The maximum order of the moving average part of the ARMA model (default is 5).}
 
 \item{method}{The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"}
-
-\item{strike_price}{Numeric value representing the fixed strike price to analyze.}
 }
 \value{
 Estimated values of a European put option at different future times
