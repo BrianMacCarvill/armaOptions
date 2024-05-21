@@ -33,9 +33,9 @@
 #' @export
 europeanCallOptionValue = function(stock_data, future_time, buy_value, max.p = 5, max.q = 5, method = 'CSS-ML') {
   # Parameters:
-  # stock_data: Numeric vector representing the historical stock prices.
-  # future_time: Future time period (in same units as stock_data) for which the call option value is calculated.
-  # buy_value: The strike price of the European call option.
+  # stock_data Numeric vector of stock prices data
+  # future_time Numeric constant of the future time
+  # buy_value The numeric buy value of the European call option
   # max.p The maximum order of the autoregressive part of the ARMA model
   # max.q The maximum order of the moving average part of the ARMA model
   # method The way that the ARMA model is calculated

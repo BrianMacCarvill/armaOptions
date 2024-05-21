@@ -64,5 +64,3 @@ CallOptionsOverStrikePrices = function(stock_data, future_time, buy_values, max.
 
   return(results)
 }
-
-

@@ -7,8 +7,7 @@ Maintainer: Brian MacCarvill <brian.mac-carvill23@imperial.ac.uk>
 Description: This package provides ways to estimate the value of European stock options 
     given stock price data. It includes functions for calculating option values 
     based on autoregressive–moving-average (ARMA) models and generates information about these models. 
-    This package is make to be easy to understand and dependent on the 'forecast', 'stats', and 'TSA' 
-    packages to provided for financial analysis capabilities.
+    This package is make to be easy to understand and for financial analysis capabilities. This package is dependent on the 'forecast' and 'stats' packages.
 License: GPL-3
 Encoding: UTF-8
 Imports: 
