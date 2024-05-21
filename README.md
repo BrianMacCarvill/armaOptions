@@ -1,22 +1,21 @@
 
 
-# ARMA Models to Value Stock Options
+# ARMA Models to European Value Stock Options
 
 ## Overview
 
-This package provides ways to estimate the value of European stock options using stock price data. It includes functions for calculating option values based on autoregressive–moving-average (ARMA) models and generating detailed statistical analyses. The package is designed to be easy to use and dependent on the 'forecast', 'stats', and 'TSA' packages to provided for financial analysis capabilities.
+This package provides ways to estimate the value of European stock options given stock price data. It includes functions for calculating option values based on autoregressive–moving-average (ARMA) models and generates information about these models. This package is make to be easy to understand and dependent on the 'forecast' and 'stats' packages to provided for financial analysis capabilities.
 
 ## Installation
 
-You can install the development version of `armaOption` from GitHub with:
+The current version of the `armaOptions` package can be installed with:
 
 ```r
-# install.packages("devtools")
-devtools::install_github("yourusername/armaOption")
+devtools::install_github("BrianMacCarvill/armaOptions")
 ```
 
-Usage
-Example: Simulating Stock Data and Calculating Put Options
+## Usage
+Calculating put option values for simulated data.
 
 ```r
 library(armaOptions)
