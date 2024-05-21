@@ -1,7 +1,6 @@
 #' Time Sensitivity Analysis for European Call Option
 #'
-#' This function analyzes the sensitivity of the European call option value to changes in the time to maturity.
-#' It calculates the option value for a fixed strike price over a range of future time periods using the `europeanCallOptionValue` function.
+#' This function calculates the value of the a European put option for a list of future time values, given stock price data and a given buy value.
 #'
 #' @param stock_data Numeric vector of stock prices data.
 #' @param future_times Numeric vector of the future times
@@ -9,10 +8,9 @@
 #' @param max.p The maximum order of the autoregressive part of the ARMA model (default is 5).
 #' @param max.q The maximum order of the moving average part of the ARMA model (default is 5).
 #' @param method The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"
-#' @return Estimated values of a European put option at different future_times
+#' @return Estimated values of a European put option at different future times
 #'
 #' @examples
-#' \dontrun{
 #' library(stats)
 #' library(forecast)
 #'
@@ -27,7 +25,6 @@
 #' future_times = c(1, 3, 5)
 #'
 #' PutOptionsOverTime(stock_data = stock_data, future_times = future_times, sell_value = sell_value)
-#' }
 #'
 #' @importFrom forecast auto.arima forecast
 #' @importFrom stats coef lm residuals

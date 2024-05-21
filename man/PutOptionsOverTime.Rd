@@ -27,14 +27,12 @@ PutOptionsOverTime(
 \item{strike_price}{Numeric value representing the fixed strike price to analyze.}
 }
 \value{
-Estimated values of a European put option at different future_times
+Estimated values of a European put option at different future times
 }
 \description{
-This function analyzes the sensitivity of the European call option value to changes in the time to maturity.
-It calculates the option value for a fixed strike price over a range of future time periods using the `europeanCallOptionValue` function.
+This function calculates the value of the a European put option for a list of future time values, given stock price data and a given buy value.
 }
 \examples{
-\dontrun{
 library(stats)
 library(forecast)
 
@@ -49,6 +47,5 @@ sell_value = 110
 future_times = c(1, 3, 5)
 
 PutOptionsOverTime(stock_data = stock_data, future_times = future_times, sell_value = sell_value)
-}
 
 }

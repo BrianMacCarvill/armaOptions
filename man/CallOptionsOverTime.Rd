@@ -27,14 +27,12 @@ CallOptionsOverTime(
 \item{strike_price}{Numeric value representing the fixed strike price to analyze.}
 }
 \value{
-Estimated values of a European call option at different future_times
+Estimated values of a European call option at different future times
 }
 \description{
-This function analyzes the sensitivity of the European call option value to changes in the time to maturity.
-It calculates the option value for a fixed strike price over a range of future time periods using the `europeanCallOptionValue` function.
+This function calculates the value of the a European call option for a list of future time values, given stock price data and a given buy value.
 }
 \examples{
-\dontrun{
 library(stats)
 library(forecast)
 
@@ -50,6 +48,5 @@ buy_value = 105
 
 
 CallOptionsOverTime(stock_data, future_times, buy_value)
-}
 
 }

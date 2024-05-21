@@ -1,17 +1,16 @@
 #' Call Option Values for Differently Priced European Call Options
 #'
-#' This function calculates the value of the a European call option for a vector of strike price values, given stock price data at a given future time.
+#' This function calculates the value of the a European call option for a list of strike price / buy values, given stock price data and a given future time.
 #'
 #' @param stock_data Numeric vector of stock prices data.
 #' @param future_time Numeric constant of the future time
-#' @param buy_values Numeric vector of the buy values to calculate the calla option values at
+#' @param buy_values Numeric vector of the buy values at which to calculate the call option values
 #' @param max.p The maximum order of the Auto Regressive part of the ARMA model (default is set to 5)
 #' @param max.q The maximum order of the Moving Average part of the ARMA model (default is set to 5)
 #' @param method The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"
-#' @return Estimated values of a European call option at different buy_values
+#' @return Estimated values of a European call option at different buy values
 #'
 #' @examples
-#' \dontrun{
 #' library(stats)
 #' library(forecast)
 #'
@@ -26,7 +25,6 @@
 #' buy_values = seq(90, 110, length.out = 5)
 #'
 #' CallOptionsOverStrikePrices(stock_data, future_time, buy_values)
-#' }
 #'
 #' @import forecast auto.arima forecast
 #' @import stats coef lm residuals
@@ -57,11 +55,12 @@ CallOptionsOverStrikePrices = function(stock_data, future_time, buy_values, max.
   n = length(buy_values)
 
   # Track Results
-  results = data.frame(buy_values = buy_values, stock_option_values = rep(0,n))
+  results = data.frame(buy_values = buy_values, stock_option_values = rep(0,n), probability_of_profit = rep(0,n))
 
   # Loop over europeanCallOptionValue
   for (i in 1:n) {
     results$stock_option_values[i] = europeanCallOptionValue(stock_data, future_time, buy_values[i], max.p, max.q, method)$stock_option_value
+    results$probability_of_profit[i] = europeanCallOptionValue(stock_data, future_time, buy_values[i], max.p, max.q, method)$probability_of_profit
   }
 
   return(results)

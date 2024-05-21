@@ -27,9 +27,26 @@ PutOptionsOverStrikePrices(
 \item{method}{The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"}
 }
 \value{
-Estimated values of a European put option at different sell_value
+Estimated values of a European put option at different sell values
 }
 \description{
-This function analyzes the sensitivity of the European put option value to changes in the strike price for a single future time period.
-It calculates the option value for a range of strike prices using the `europeanPutOptionValue` function.
+This function calculates the value of the a European put option for a list of strike price / sell values, given stock price data and a given future time.
+}
+\examples{
+library(stats)
+library(forecast)
+
+n = 100
+set.seed(42)
+arma_values = arima.sim(n = n, model = list(ar = c(0.6), ma = c(0.5, -0.5)))
+linear_model = 5 + 1:n
+stock_data = arma_values + linear_model
+
+
+future_time = 2
+sell_values = seq(90, 110, length.out = 5)
+
+PutOptionsOverStrikePrices(stock_data, future_time, sell_values)
+
+
 }

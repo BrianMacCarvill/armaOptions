@@ -2,16 +2,15 @@
 #'
 #' This function calculates the value of a European call option based on stock data, a future time value, and a buy value
 #'
-#' @param stock_data Numeric vector of stock prices data.
+#' @param stock_data Numeric vector of stock prices data
 #' @param future_time Numeric constant of the future time
-#' @param buy_value The numeric buy value of the European call option.
-#' @param max.p The maximum order of the autoregressive part of the ARMA model.
-#' @param max.q The maximum order of the moving average part of the ARMA model.
+#' @param buy_value The numeric buy value of the European call option
+#' @param max.p The maximum order of the autoregressive part of the ARMA model (default is set to 5)
+#' @param max.q The maximum order of the moving average part of the ARMA model (default is set to 5)
 #' @param method The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"
-#' @return Estimate the value of a European call option, determine the probability of making profits, and model a appropriate ARMA model for the given stock data.
+#' @return Estimate the value of a European call option, determine the probability of making profits, and model an appropriate ARMA model for the given stock data
 #'
 #' @examples
-#' \dontrun{
 #' # Import Packages
 #' library(stats)
 #' library(forecast)
@@ -26,7 +25,7 @@
 #' future_time = 1
 #'
 #' europeanCallOptionValue(stock_data = stock_data, future_time, buy_value, max.p = 5, max.q = 5)
-#' }
+#'
 #'
 #' @importFrom forecast auto.arima forecast
 #' @importFrom stats coef lm residuals
@@ -46,7 +45,6 @@ europeanCallOptionValue = function(stock_data, future_time, buy_value, max.p = 5
     stop("stock_data needs to be numeric")
   }
 
-
   if (length(stock_data) < 2) {
     stop("stock_data needs to have at least 2 values")
   }
@@ -64,14 +62,14 @@ europeanCallOptionValue = function(stock_data, future_time, buy_value, max.p = 5
   }
 
   # Define positive_conditional_expectation function
-  positive_conditional_expectation <- function(mu, sigma, S) {
-    z <- (S - mu) / sigma
+  positive_conditional_expectation = function(mu, sigma, S) {
+    z = (S - mu) / sigma
 
-    pdf <- dnorm(z)
-    cdf <- pnorm(z)
+    pdf = dnorm(z)
+    cdf = pnorm(z)
 
     # Compute E[X | X > S]
-    expectation <- mu + sigma * (pdf / (1 - cdf))
+    expectation = mu + sigma * (pdf / (1 - cdf))
 
     return(expectation)
   }
@@ -115,7 +113,7 @@ europeanCallOptionValue = function(stock_data, future_time, buy_value, max.p = 5
   # Probability that the future residual doesn't exceeds the target
   probability_not_exceed = pnorm(profit_threshold, mean = future_expected_residual, sd = forecast_sd, lower.tail = FALSE)
 
-  # Return the expected payoff of the put option
+  # times the expected profit and the probability of profit
   expected_profit_when_profitable = conditional_value - profit_threshold
   stock_option_value = expected_profit_when_profitable * probability_not_exceed
 

@@ -18,7 +18,7 @@ CallOptionsOverStrikePrices(
 
 \item{future_time}{Numeric constant of the future time}
 
-\item{buy_values}{Numeric vector of the buy values to calculate the calla option values at}
+\item{buy_values}{Numeric vector of the buy values at which to calculate the call option values}
 
 \item{max.p}{The maximum order of the Auto Regressive part of the ARMA model (default is set to 5)}
 
@@ -27,13 +27,12 @@ CallOptionsOverStrikePrices(
 \item{method}{The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"}
 }
 \value{
-Estimated values of a European call option at different buy_values
+Estimated values of a European call option at different buy values
 }
 \description{
-This function calculates the value of the a European call option for a vector of strike price values, given stock price data at a given future time.
+This function calculates the value of the a European call option for a list of strike price / buy values, given stock price data and a given future time.
 }
 \examples{
-\dontrun{
 library(stats)
 library(forecast)
 
@@ -48,6 +47,5 @@ future_time = 3
 buy_values = seq(90, 110, length.out = 5)
 
 CallOptionsOverStrikePrices(stock_data, future_time, buy_values)
-}
 
 }

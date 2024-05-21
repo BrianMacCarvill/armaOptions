@@ -20,20 +20,19 @@ europeanPutOptionValue(
 
 \item{sell_value}{The numeric sell value of the European put option.}
 
-\item{max.p}{The maximum order of the autoregressive part of the ARMA model}
+\item{max.p}{The maximum order of the autoregressive part of the ARMA model (default is set to 5)}
 
-\item{max.q}{The maximum order of the moving average part of the ARMA model}
+\item{max.q}{The maximum order of the moving average part of the ARMA model (default is set to 5)}
 
 \item{method}{The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"}
 }
 \value{
-Estimate the value of a European put option, determine the probability of making profits, and model a appropriate ARMA model for the given stock data.
+Estimate the value of a European put option, determine the probability of making profits, and model an appropriate ARMA model for the given stock data.
 }
 \description{
 This function calculates the value of a European put option based on stock data, a future time value, and a sell value
 }
 \examples{
-\dontrun{
 # Import Packages
 library(stats)
 library(forecast)
@@ -44,6 +43,6 @@ arma_values = arima.sim(n = n, model = list(ar = c(0.6), ma = c(0.5, -0.5)))
 linear_model = 5 + 1:n
 stock_data = arma_values + linear_model
 europeanPutOptionValue(stock_data = stock_data, future_time = 5, sell_value = 110, max.p = 5, max.q = 5)
-}
+
 
 }

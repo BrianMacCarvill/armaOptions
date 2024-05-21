@@ -1,7 +1,6 @@
 #' Strike Price Sensitivity Analysis for European Put Option
 #'
-#' This function analyzes the sensitivity of the European put option value to changes in the strike price for a single future time period.
-#' It calculates the option value for a range of strike prices using the `europeanPutOptionValue` function.
+#' This function calculates the value of the a European put option for a list of strike price / sell values, given stock price data and a given future time.
 #'
 #' @param stock_data Numeric vector of stock prices data.
 #' @param future_time Numeric constant of the future time
@@ -9,10 +8,9 @@
 #' @param max.p The maximum order of the autoregressive part of the ARMA model (default is 5)
 #' @param max.q The maximum order of the moving average part of the ARMA model (default is 5)
 #' @param method The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"
-#' @return Estimated values of a European put option at different sell_value
+#' @return Estimated values of a European put option at different sell values
 #'
 #' @examples
-#' \dontrun{
 #' library(stats)
 #' library(forecast)
 #'
@@ -26,8 +24,8 @@
 #' future_time = 2
 #' sell_values = seq(90, 110, length.out = 5)
 #'
-#' PutOptionsOverStrikePrices(stock_data, future_time, sell_values)'
-#' }
+#' PutOptionsOverStrikePrices(stock_data, future_time, sell_values)
+#'
 #'
 #' @importFrom forecast auto.arima forecast
 #' @importFrom stats coef lm residuals

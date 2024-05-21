@@ -14,26 +14,25 @@ europeanCallOptionValue(
 )
 }
 \arguments{
-\item{stock_data}{Numeric vector of stock prices data.}
+\item{stock_data}{Numeric vector of stock prices data}
 
 \item{future_time}{Numeric constant of the future time}
 
-\item{buy_value}{The numeric buy value of the European call option.}
+\item{buy_value}{The numeric buy value of the European call option}
 
-\item{max.p}{The maximum order of the autoregressive part of the ARMA model.}
+\item{max.p}{The maximum order of the autoregressive part of the ARMA model (default is set to 5)}
 
-\item{max.q}{The maximum order of the moving average part of the ARMA model.}
+\item{max.q}{The maximum order of the moving average part of the ARMA model (default is set to 5)}
 
 \item{method}{The way that the ARMA model is calculated, accepted values are "ML", "CSS-ML" and "CSS"}
 }
 \value{
-Estimate the value of a European call option, determine the probability of making profits, and model a appropriate ARMA model for the given stock data.
+Estimate the value of a European call option, determine the probability of making profits, and model an appropriate ARMA model for the given stock data
 }
 \description{
 This function calculates the value of a European call option based on stock data, a future time value, and a buy value
 }
 \examples{
-\dontrun{
 # Import Packages
 library(stats)
 library(forecast)
@@ -48,6 +47,6 @@ buy_value = 105
 future_time = 1
 
 europeanCallOptionValue(stock_data = stock_data, future_time, buy_value, max.p = 5, max.q = 5)
-}
+
 
 }
