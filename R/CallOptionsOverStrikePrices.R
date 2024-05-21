@@ -57,7 +57,6 @@ CallOptionsOverStrikePrices = function(stock_data, future_time, buy_values, max.
   # Track Results
   results = data.frame(buy_values = buy_values, stock_option_values = rep(0,n), probability_of_profit = rep(0,n))
 
-  # Loop over europeanCallOptionValue
   for (i in 1:n) {
     results$stock_option_values[i] = europeanCallOptionValue(stock_data, future_time, buy_values[i], max.p, max.q, method)$stock_option_value
     results$probability_of_profit[i] = europeanCallOptionValue(stock_data, future_time, buy_values[i], max.p, max.q, method)$probability_of_profit
