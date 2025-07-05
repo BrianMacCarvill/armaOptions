@@ -11,7 +11,6 @@
 #' @return Estimate the value of a European call option, determine the probability of making profits, and model an appropriate ARMA model for the given stock data
 #'
 #' @examples
-#' # Import Packages
 #' library(stats)
 #' library(forecast)
 #' # Create simulated data
@@ -20,12 +19,9 @@
 #' arma_values = arima.sim(n = n, model = list(ar = c(0.5), ma = c(0.5, -0.5)))
 #' linear_model = 5 +  1:n
 #' stock_data = arma_values + linear_model
-#'
 #' buy_value = 105
 #' future_time = 1
-#'
 #' europeanCallOptionValue(stock_data = stock_data, future_time, buy_value, max.p = 5, max.q = 5)
-#'
 #'
 #' @importFrom forecast auto.arima forecast
 #' @importFrom stats coef lm residuals
@@ -53,7 +49,7 @@ europeanCallOptionValue = function(stock_data, future_time, buy_value, max.p = 5
     stop("future_time needs to be numeric")
   }
 
-  if (!is.numeric(sell_value)) {
+  if (!is.numeric(buy_value)) {
     stop("sell_value needs to be numeric")
   }
 

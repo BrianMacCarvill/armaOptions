@@ -33,7 +33,6 @@ Estimate the value of a European call option, determine the probability of makin
 This function calculates the value of a European call option based on stock data, a future time value, and a buy value
 }
 \examples{
-# Import Packages
 library(stats)
 library(forecast)
 # Create simulated data
@@ -42,11 +41,8 @@ set.seed(42)
 arma_values = arima.sim(n = n, model = list(ar = c(0.5), ma = c(0.5, -0.5)))
 linear_model = 5 +  1:n
 stock_data = arma_values + linear_model
-
 buy_value = 105
 future_time = 1
-
 europeanCallOptionValue(stock_data = stock_data, future_time, buy_value, max.p = 5, max.q = 5)
-
 
 }

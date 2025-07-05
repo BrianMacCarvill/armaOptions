@@ -11,7 +11,6 @@
 #' @return Estimate the value of a European put option, determine the probability of making profits, and model an appropriate ARMA model for the given stock data.
 #'
 #' @examples
-#' # Import Packages
 #' library(stats)
 #' library(forecast)
 #' # Create simulated data
@@ -22,7 +21,8 @@
 #' stock_data = arma_values + linear_model
 #' europeanPutOptionValue(stock_data = stock_data, future_time = 5, sell_value = 110, max.p = 5, max.q = 5)
 #'
-#'
+#' @import forecast
+#' @import stats
 #' @importFrom forecast auto.arima forecast
 #' @importFrom stats coef lm residuals
 #'

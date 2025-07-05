@@ -26,8 +26,10 @@
 #'
 #' CallOptionsOverStrikePrices(stock_data, future_time, buy_values)
 #'
-#' @import forecast auto.arima forecast
-#' @import stats coef lm residuals
+#' @import forecast
+#' @import stats
+#' @importFrom forecast auto.arima forecast
+#' @importFrom stats coef lm residuals
 #' @export
 #'
 CallOptionsOverStrikePrices = function(stock_data, future_time, buy_values, max.p = 5, max.q = 5, method = 'CSS-ML') {

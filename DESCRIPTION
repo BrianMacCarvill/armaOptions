@@ -12,6 +12,5 @@ License: GPL-3
 Encoding: UTF-8
 Imports: 
     forecast,
-    stats,
-    TSA
+    stats
 RoxygenNote: 7.3.1
