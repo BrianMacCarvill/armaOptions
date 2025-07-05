@@ -94,4 +94,4 @@ where $S_r = S-\beta_0 - \beta_1(t+h)$.
 
 For an ARMA(p,q) model, assuming knowledge of the model parameters, at a forecasted value $X_{t+h}$ forecasted h-days into the future this value follows a normal distribution with a distribution function $\mathcal{N}(\hat{X}(t+h),\hat{\sigma}(t+h))$ for more details about how the forecasting or time series parameter fitting I would recommend chapters 3 and 4 of the book "Time Series Analysis" by Lewis Hamilton or the source code and documentation to the R package "forecast". Once this final equation is found, it is relatively easy to solve for the expected value of the call option.
 
-The logic for Call options is the exact same just in the other direction. 
+The logic for Call options is the exact same just, in the other direction. 
