@@ -56,11 +56,15 @@ print(results)
 
 ## Setup
 
-These functions are based on the assumption that price data follow the following equation $$P_t = \beta_0 + \beta_1 * t + X_t$$
+These functions are based on the assumption that price data follow the following equation 
+
+$$P_t = \beta_0 + \beta_1 * t + X_t$$ 
 
 where $t$ is time, $\beta_0$ and $\beta_1$ are linear regression parameters, and $X_t$ are variables from an ARMA(p,q) model. 
 
-An ARMA(p,q) model is defined as $$X_t = \epsilon_t + \sum_{i=1}^{p}\phi_iX_{t-i} + \sum_{q}^{j=i}\theta_j\epsilon_{t-j}$$
+An ARMA(p,q) model is defined as 
+
+$$X_t = \epsilon_t + \sum_{i=1}^{p}\phi_iX_{t-i} + \sum_{q}^{j=i}\theta_j\epsilon_{t-j}$$
 
 where $\epsilon_t\sim\mathcal{N}(0,1)~\forall t\in\mathbb{N}$, and $\phi$ and $\theta$ are stationary time series parameters.
 
@@ -75,8 +79,8 @@ $$
 \text{Expected Value} &= \int_{-\infty}^{\infty}\text{max}(S-P_{t+h},0)f(P_{t+h})dP_{t+h} \\
 &= \int_{-\infty}^{S}(S-P_{t+h})f(P_{t+h})dP_{t+h} \\
 &= S\int_{-\infty}^{S}f(P_{t+h})dP_{t+h} - \int_{-\infty}^{S}P_{t+h}f(P_{t+h})dP_{t+h} \\
-&= S\mathbb{P}(P_{t+h}<S) - \mathbb{E}(P_{t+h}|P_{t+h}<S)\mathbb{P}(P_{t+h}<S) \\
-&= (S - \mathbb{E}(P_{t+h}|P_{t+h}<S))\mathbb{P}(P_{t+h}<S)
+&= S\Pr(P_{t+h} < S) - E(P_{t+h} | P_{t+h} \< S)\Pr(P_{t+h} \< S) \\
+&= (S - E(P_{t+h} | P_{t+h} < S))\Pr(P_{t+h} < S)
 \end{align*}
 $$
 
@@ -84,10 +88,10 @@ where $f(P_{t+h})$ is the distribution function of $P_{t+h}$.
 
 We have defined the stock price at point $t+h$ as $$P_{t+h} = \beta_0 + \beta_1 * (t+h) + X_{t_h}$$. Since $P_{t+h}<S \implies X_{t+h}<S-\beta_0 - \beta_1(t+h)$, if we assume knowledge of the regression parameters $\beta_0$ and $\beta_1$ then $S-\beta_0 - \beta_1 * (t+h)$ is a deterministic value and so 
 
-$$(S - \mathbb{E}(P_{t+h}|P_{t+h}<S))\mathbb{P}(P_{t+h}<S) = (S_r - \mathbb{E}(X_{t+h}|X_{t+h}<S_r))\mathbb{P}(X_{t+h}<S_r)$$
+$$(S - E(P_{t+h} | P_{t+h} < S))\Pr(P_{t+h} < S) = (S_r - E(X_{t+h} | X_{t+h} < S_r))\Pr(X_{t+h} < S_r)$$
 
 where $S_r = S-\beta_0 - \beta_1(t+h)$.
 
-For an ARMA(p,q) model, assuming knowledge of the model parameters, at a forecasted value $X_{t+h}$ forecasted h-days into the future this value follows a normal distribution with a distribution function $\mathcal{N}(\hat{X}(t+h),\hat{\sigma}(t+h))$ for more details about how the forecasting or time series parameter fitting I would recommend chapters 3 and 4 of the book "Time Series Analysis" by Lewis Hamilton or the source code and documentation to the R package "forecast". 
+For an ARMA(p,q) model, assuming knowledge of the model parameters, at a forecasted value $X_{t+h}$ forecasted h-days into the future this value follows a normal distribution with a distribution function $\mathcal{N}(\hat{X}(t+h),\hat{\sigma}(t+h))$ for more details about how the forecasting or time series parameter fitting I would recommend chapters 3 and 4 of the book "Time Series Analysis" by Lewis Hamilton or the source code and documentation to the R package "forecast". Once this final equation is found, it is relatively easy to solve for the expected value of the call option.
 
 The logic for Call options is the exact same just in the other direction. 
