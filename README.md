@@ -68,7 +68,7 @@ $$X_t = \epsilon_t + \sum_{i=1}^{p}\phi_iX_{t-i} + \sum_{q}^{j=i}\theta_j\epsilo
 
 where $\epsilon_t\sim\mathcal{N}(0,1)~\forall t\in\mathbb{N}$, and $\phi$ and $\theta$ are stationary time series parameters.
 
-So lets say our friend Bob wants to sell us a European put option at a price S, h days into the future how do we find a fair price? This put option is only valuable if, in h-days, $P_{t+h}<S$ because then we can sell a security at a value greater then its price and the option is worthless if $P_{t+h}>S$ is true.
+So lets say our friend Bob wants to sell us a European put option at a price S, h days into the future. How do we find a fair price? This put option is only valuable if, in h-days, $P_{t+h}<S$ because then we can sell a security at a value greater then its price and the option is worthless if $P_{t+h}>S$ is true.
 
 ## Method
 
