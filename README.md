@@ -68,7 +68,7 @@ $$X_t = \epsilon_t + \sum_{i=1}^{p}\phi_iX_{t-i} + \sum_{q}^{j=i}\theta_j\epsilo
 
 where $\epsilon_t\sim\mathcal{N}(0,1)~\forall t\in\mathbb{N}$, and $\phi$ and $\theta$ are stationary time series parameters.
 
-So lets say our friend Bob wants to sell us a European put option at a price S, h days into the future. How do we find a fair price? This put option is only valuable if, in h-days, $P_{t+h}<S$ because then we can sell a security at a value greater then its price and the option is worthless if $P_{t+h}>S$ is true.
+So lets say our friend Bob wants to sell us a [European put option](https://www.investopedia.com/terms/p/putoption.asp#:~:text=A%20put%20option%20%28or%20%E2%80%9Cput%E2%80%9D%29%2C%20which%20gives%20the,This%20predetermined%20price%20is%20called%20the%20strike%20price.) at a price S, h days into the future. How do we find a fair price? This put option is only valuable if, in h-days, $P_{t+h}<S$ because then we can sell a security at a value greater then its price and the option is worthless if $P_{t+h}>S$ is true.
 
 ## Method
 
@@ -94,4 +94,4 @@ where $S_r = S-\beta_0 - \beta_1(t+h)$.
 
 For an ARMA(p,q) model, assuming knowledge of the model parameters, at a forecasted value $X_{t+h}$ forecasted h-days into the future this value follows a normal distribution with a distribution function $\mathcal{N}(\hat{X}(t+h),\hat{\sigma}(t+h))$ for more details about how the forecasting or time series parameter fitting I would recommend chapters 3 and 4 of the book "Time Series Analysis" by Lewis Hamilton or the source code and documentation to the R package "forecast". Once this final equation is found, it is relatively easy to solve for the expected value of the call option.
 
-The logic for Call options is the exact same just, in the other direction. 
+The logic for [Call options](https://www.investopedia.com/terms/c/calloption.asp) is the exact same just, in the other direction. 
