@@ -54,9 +54,6 @@ print(results)
 
 # armaOptions Package Theoretical Explanation
 
-**Author**: Brian MacCarvill  
-**Date**: July 2025
-
 ## Setup
 
 These functions are based on the assumption that price data follow the following equation
