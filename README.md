@@ -87,7 +87,7 @@ $$
 &= S \, \mathbb{P}(P_{t+h} < S)
     - \mathbb{E}(P_{t+h} \mid P_{t+h} < S) \, \mathbb{P}(P_{t+h} < S) \\
 &= \left( S - \mathbb{E}(P_{t+h} \mid P_{t+h} < S) \right)
-    \, \mathbb{P}(P_{t+h} < S).
+    \, \mathbb{P}(P_{t+h} < S)
 \end{aligned}
 $$
 
@@ -101,13 +101,7 @@ $$
 
 Since \(P_{t+h} < S \implies X_{t+h} < S - \beta_0 - \beta_1 (t+h)\), if we assume knowledge of the regression parameters \(\beta_0\) and \(\beta_1\) then \(S - \beta_0 - \beta_1 (t+h)\) is a deterministic value and so
 
-$$
-\left( S - \mathbb{E}(P_{t+h} \mid P_{t+h} < S) \right)
-\mathbb{P}(P_{t+h} < S)
-=
-\left( S_r - \mathbb{E}(X_{t+h} \mid X_{t+h} < S_r) \right)
-\mathbb{P}(X_{t+h} < S_r)
-$$
+$$\left( S - \mathbb{E}(P_{t+h} \mid P_{t+h} < S) \right)\mathbb{P}(P_{t+h} < S)=\left( S_r -\mathbb{E}(X_{t+h} \mid X_{t+h} < S_r) \right)\mathbb{P}(X_{t+h} < S_r)$$
 
 where
 
