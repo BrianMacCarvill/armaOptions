@@ -70,19 +70,21 @@ So lets say our friend Bob wants to sell us a European put option at a price S, 
 
 The expected value can therefore be written as
 
+$$
 \begin{align*}
 \text{Expected Value} &= \int_{-\infty}^{\infty}\text{max}(S-P_{t+h},0)f(P_{t+h})dP_{t+h} \\
 &= \int_{-\infty}^{S}(S-P_{t+h})f(P_{t+h})dP_{t+h} \\
 &= S\int_{-\infty}^{S}f(P_{t+h})dP_{t+h} - \int_{-\infty}^{S}P_{t+h}f(P_{t+h})dP_{t+h} \\
-&= S\Pr(P_{t+h}<S) - \E(P_{t+h}|P_{t+h}<S)\Pr(P_{t+h}<S) \\
-&= (S - \E(P_{t+h}|P_{t+h}<S))\Pr(P_{t+h}<S)
+&= S\mathbb{P}(P_{t+h}<S) - \mathbb{E}(P_{t+h}|P_{t+h}<S)\mathbb{P}(P_{t+h}<S) \\
+&= (S - \mathbb{E}(P_{t+h}|P_{t+h}<S))\mathbb{P}(P_{t+h}<S)
 \end{align*}
+$$
 
 where $f(P_{t+h})$ is the distribution function of $P_{t+h}$.
 
 We have defined the stock price at point $t+h$ as $$P_{t+h} = \beta_0 + \beta_1 * (t+h) + X_{t_h}$$. Since $P_{t+h}<S \implies X_{t+h}<S-\beta_0 - \beta_1(t+h)$, if we assume knowledge of the regression parameters $\beta_0$ and $\beta_1$ then $S-\beta_0 - \beta_1 * (t+h)$ is a deterministic value and so 
 
-$$(S - \E(P_{t+h}|P_{t+h}<S))\Pr(P_{t+h}<S) = (S_r - \E(X_{t+h}|X_{t+h}<S_r))\Pr(X_{t+h}<S_r)$$
+$$(S - \mathbb{E}(P_{t+h}|P_{t+h}<S))\mathbb{P}(P_{t+h}<S) = (S_r - \mathbb{E}(X_{t+h}|X_{t+h}<S_r))\mathbb{P}(X_{t+h}<S_r)$$
 
 where $S_r = S-\beta_0 - \beta_1(t+h)$.
 
