@@ -86,7 +86,7 @@ $$
 
 where $f(P_{t+h})$ is the distribution function of $P_{t+h}$.
 
-We have defined the stock price at point $t+h$ as $$P_{t+h} = \beta_0 + \beta_1(t+h) + X_{t_h}$$. Since $P_{t+h}<S \implies X_{t+h}<S-\beta_0 - \beta_1(t+h)$, if we assume knowledge of the regression parameters $\beta_0$ and $\beta_1$ then $S-\beta_0 - \beta_1 * (t+h)$ is a deterministic value and so 
+We have defined the stock price at point $t+h$ as $$P_{t+h} = \beta_0 + \beta_1(t+h) + X_{t_h}$$. Since $P_{t+h}<S \implies X_{t+h}<S-\beta_0 - \beta_1(t+h)$, if we assume knowledge of the regression parameters $\beta_0$ and $\beta_1$ then $S-\beta_0 - \beta_1(t+h)$ is a deterministic value and so 
 
 $$(S - E(P_{t+h} | P_{t+h} < S))\Pr(P_{t+h} < S) = (S_r - E(X_{t+h} | X_{t+h} < S_r))\Pr(X_{t+h} < S_r)$$
 
