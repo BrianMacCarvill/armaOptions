@@ -56,61 +56,36 @@ print(results)
 
 ## Setup
 
-These functions are based on the assumption that price data follow the following equation
+These functions are based on the assumption that price data follow the following equation $$P_t = \beta_0 + \beta_1 * t + X_t$$
 
-$$
-P_t = \beta_0 + \beta_1 \, t + X_t
-$$
+where $t$ is time, $\beta_0$ and $\beta_1$ are linear regression parameters, and $X_t$ are variables from an ARMA(p,q) model. 
 
-where $t$ is time, $\beta_0$ and $\beta_1$ are linear regression parameters, and $X_t$ are variables from an ARMA(p,q) model.
+An ARMA(p,q) model is defined as $$X_t = \epsilon_t + \sum_{i=1}^{p}\phi_iX_{t-i} + \sum_{q}^{j=i}\theta_j\epsilon_{t-j}$$
 
-An ARMA(p,q) model is defined as
+where $\epsilon_t\sim\mathcal{N}(0,1)~\forall t\in\mathbb{N}$, and $\phi$ and $\theta$ are stationary time series parameters.
 
-$$
-X_t = \epsilon_t + \sum_{i=1}^{p}\phi_i X_{t-i} + \sum_{j=1}^{q}\theta_j \epsilon_{t-j}
-$$
-
-where $\epsilon_t \sim \mathcal{N}(0,1)$ for all $t \in \mathbb{N}$, and $\phi$ and $\theta$ are stationary time series parameters.
-
-So let's say our friend Bob wants to sell us a European put option at a price $S$, $h$ days into the future. How do we find a fair price? This put option is only valuable if, in $h$ days, $P_{t+h} < S$ because then we can sell a security at a value greater than its price, and the option is worthless if $P_{t+h} > S$.
+So lets say our friend Bob wants to sell us a European put option at a price S, h days into the future how do we find a fair price? This put option is only valuable if, in h-days, $P_{t+h}<S$ because then we can sell a security at a value greater then its price and the option is worthless if $P_{t+h}>S$ is true.
 
 ## Method
 
 The expected value can therefore be written as
 
-$$
-\begin{aligned}
-\text{Expected Value} &= \int_{-\infty}^{\infty} \max(S - P_{t+h}, 0) \, f(P_{t+h}) \, dP_{t+h} \\
-&= \int_{-\infty}^{S} (S - P_{t+h}) \, f(P_{t+h}) \, dP_{t+h} \\
-&= S \int_{-\infty}^{S} f(P_{t+h}) \, dP_{t+h}
-    - \int_{-\infty}^{S} P_{t+h} \, f(P_{t+h}) \, dP_{t+h} \\
-&= S \, \mathbb{P}(P_{t+h} < S)
-    - \mathbb{E}(P_{t+h} \mid P_{t+h} < S) \, \mathbb{P}(P_{t+h} < S) \\
-&= \left( S - \mathbb{E}(P_{t+h} \mid P_{t+h} < S) \right)
-    \, \mathbb{P}(P_{t+h} < S)
-\end{aligned}
-$$
+\begin{align*}
+\text{Expected Value} &= \int_{-\infty}^{\infty}\text{max}(S-P_{t+h},0)f(P_{t+h})dP_{t+h} \\
+&= \int_{-\infty}^{S}(S-P_{t+h})f(P_{t+h})dP_{t+h} \\
+&= S\int_{-\infty}^{S}f(P_{t+h})dP_{t+h} - \int_{-\infty}^{S}P_{t+h}f(P_{t+h})dP_{t+h} \\
+&= S\Pr(P_{t+h}<S) - \E(P_{t+h}|P_{t+h}<S)\Pr(P_{t+h}<S) \\
+&= (S - \E(P_{t+h}|P_{t+h}<S))\Pr(P_{t+h}<S)
+\end{align*}
 
 where $f(P_{t+h})$ is the distribution function of $P_{t+h}$.
 
-We have defined the stock price at point $t+h$ as
+We have defined the stock price at point $t+h$ as $$P_{t+h} = \beta_0 + \beta_1 * (t+h) + X_{t_h}$$. Since $P_{t+h}<S \implies X_{t+h}<S-\beta_0 - \beta_1(t+h)$, if we assume knowledge of the regression parameters $\beta_0$ and $\beta_1$ then $S-\beta_0 - \beta_1 * (t+h)$ is a deterministic value and so 
 
-$$
-P_{t+h} = \beta_0 + \beta_1 \, (t+h) + X_{t+h}.
-$$
+$$(S - \E(P_{t+h}|P_{t+h}<S))\Pr(P_{t+h}<S) = (S_r - \E(X_{t+h}|X_{t+h}<S_r))\Pr(X_{t+h}<S_r)$$
 
-Since $P_{t+h} < S \implies X_{t+h} < S - \beta_0 - \beta_1 (t+h)$, if we assume knowledge of the regression parameters $\beta_0$ and $\beta_1$ then $S - \beta_0 - \beta_1 (t+h)$ is a deterministic value and so
+where $S_r = S-\beta_0 - \beta_1(t+h)$.
 
-$$\left( S - \mathbb{E}(P_{t+h} \mid P_{t+h} < S) \right)\mathbb{P}(P_{t+h} < S)=\left( S_r -\mathbb{E}(X_{t+h} \mid X_{t+h} < S_r) \right)\mathbb{P}(X_{t+h} < S_r)$$
+For an ARMA(p,q) model, assuming knowledge of the model parameters, at a forecasted value $X_{t+h}$ forecasted h-days into the future this value follows a normal distribution with a distribution function $\mathcal{N}(\hat{X}(t+h),\hat{\sigma}(t+h))$ for more details about how the forecasting or time series parameter fitting I would recommend chapters 3 and 4 of the book "Time Series Analysis" by Lewis Hamilton or the source code and documentation to the R package "forecast". 
 
-where
-
-$$
-S_r = S - \beta_0 - \beta_1 (t+h).
-$$
-
-For an ARMA(p,q) model, assuming knowledge of the model parameters, at a forecasted value $X_{t+h}$ forecasted $h$ days into the future this value follows a normal distribution with a distribution function $$\mathcal{N}\left( \hat{X}(t+h), \hat{\sigma}(t+h) \right).$$
-
-For more details about how the forecasting or time series parameter fitting is performed, I recommend chapters 3 and 4 of the book *Time Series Analysis* by Lewis Hamilton or the source code and documentation to the R package **forecast**.
-
-The logic for call options is exactly the same, just in the opposite direction.
+The logic for Call options is the exact same just in the other direction. 
