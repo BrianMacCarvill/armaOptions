@@ -41,6 +41,6 @@ set.seed(42)
 arma_values = arima.sim(n = n, model = list(ar = c(0.6), ma = c(0.5, -0.5)))
 linear_model = 5 + 1:n
 stock_data = arma_values + linear_model
-europeanPutOptionValue(stock_data = stock_data, future_time = 5, sell_value = 110, max.p = 5, max.q = 5)
+europeanPutOptionValue(stock_data = stock_data,future_time = 5,sell_value = 110,max.p = 5,max.q = 5)
 
 }
