@@ -1,10 +1,3 @@
----
-output:
-  pdf_document: default
-  html_document: default
----
-
-
 # ARMA Models to European Value Stock Options
 
 ## Overview
