@@ -1,7 +1,7 @@
 Package: armaOptions
 Type: Package
 Title: ARMA Models to Value Stock Options 
-Version: 0.1.0
+Version: 1.0.0
 Author: Brian MacCarvill
 Maintainer: Brian MacCarvill <brianmaccarvills@gmail.com>
 Description: This package provides ways to estimate the value of European stock options 
