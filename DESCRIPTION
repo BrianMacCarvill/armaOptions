@@ -2,7 +2,6 @@ Package: armaOptions
 Type: Package
 Title: ARMA Models to Value Stock Options 
 Version: 1.0.0
-Author: Brian MacCarvill
 Authors@R: person(given = "Brian",
                       family = "MacCarvill",
                       role = c("aut", "cre"),
