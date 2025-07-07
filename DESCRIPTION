@@ -3,8 +3,12 @@ Type: Package
 Title: ARMA Models to Value Stock Options 
 Version: 1.0.0
 Author: Brian MacCarvill
+Authors@R: person(given = "Brian",
+                      family = "MacCarvill",
+                      role = c("aut", "cre"),
+                      email = "brianmaccarvills@gmail.com")
 Maintainer: Brian MacCarvill <brianmaccarvills@gmail.com>
-Description: This package provides ways to estimate the value of European stock options 
+Description: Providing ways to estimate the value of European stock options 
     given stock price data. It includes functions for calculating option values 
     based on autoregressive–moving-average (ARMA) models and generates information about these models. 
     This package is make to be easy to understand and for financial analysis capabilities. This package is dependent on the 'forecast' and 'stats' packages.
